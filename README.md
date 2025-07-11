@@ -64,12 +64,14 @@ Linux
 
 Use package manager of choice or build from source: [install k9s](https://k9scli.io/topics/install/)
 
-### Deploy your namespace
+### How to deploy a namespace
 
 In Kubernetes, namespaces provide a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces.
 
 - Update the file `manifest/namespace.yaml` with a unique name for your namespace, for instance your slack username
 - Deploy the namespace by running: `kubectl apply -f namespace.yaml`
+
+For our purposes we're going to be using the provided `husbanken` namespace.
 
 ## Task 1
 
