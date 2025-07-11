@@ -7,8 +7,8 @@ metadata:
     app: ඞඞඞ
 spec:
   ports:
-  - port: ඞඞඞ
-    targetPort: ඞඞඞ
+    - port: ඞඞඞ
+      targetPort: ඞඞඞ
   selector:
     app: ඞඞඞ
 ---
@@ -30,5 +30,5 @@ spec:
         app: ඞඞඞ
     spec:
       containers:
-      - name: database
-        image: workshopacrsqr2klsnuxgxa.azurecr.io/ඞඞඞ/name:0.1.0
+        - name: database
+          image: sommerjobbbn2025acr.azurecr.io/ඞඞඞ/name:0.1.0

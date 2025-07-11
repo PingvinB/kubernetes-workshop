@@ -7,8 +7,8 @@ metadata:
     app: frontend
 spec:
   ports:
-  - port: 80
-    targetPort: 3000
+    - port: 80
+      targetPort: 3000
   selector:
     app: frontend
 
@@ -21,16 +21,16 @@ metadata:
 spec:
   ingressClassName: azure-application-gateway
   rules:
-  - http:
-      paths:
-      # change this to your own path
-      - path: /ඞඞඞ # <subdirectory>
-        backend:
-          service:
-            name: frontend
-            port:
-              number: 80
-        pathType: Prefix
+    - http:
+        paths:
+          # change this to your own path
+          - path: /ඞඞඞ # <subdirectory>
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+            pathType: Prefix
 
 ---
 apiVersion: apps/v1
@@ -51,6 +51,6 @@ spec:
         app: frontend
     spec:
       containers:
-      - name: frontend
-        image: workshopacrsqr2klsnuxgxa.azurecr.io/ඞඞඞ/<navn>:versjon
-        imagePullPolicy: Always
+        - name: frontend
+          image: sommerjobbbn2025acr.azurecr.io/ඞඞඞ/<navn>:versjon
+          imagePullPolicy: Always

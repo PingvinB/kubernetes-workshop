@@ -6,7 +6,6 @@ metadata:
     name: workshop
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -16,8 +15,8 @@ metadata:
     app: postgres
 spec:
   ports:
-  - port: 5432
-    targetPort: 5432
+    - port: 5432
+      targetPort: 5432
   selector:
     app: postgres
 ---
@@ -40,7 +39,7 @@ metadata:
   namespace: workshop
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   storageClassName: managed-csi
   resources:
     requests:
@@ -62,29 +61,29 @@ spec:
         app: postgres
     spec:
       volumes:
-      - name: postgresdb
-        persistentVolumeClaim:
-          claimName: azure-storage
-      containers:
-      - name: database
-        image: workshopacrsqr2klsnuxgxa.azurecr.io/sample/postgres:0.1.0
-        imagePullPolicy: Always
-        envFrom:
-        - configMapRef:
-            name: postgres-config
-        env:
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: pg-password
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
-          limits:
-            cpu: 1
-            memory: 500Mi
-        volumeMounts:
         - name: postgresdb
-          mountPath: /var/lib/postgresql/data
+          persistentVolumeClaim:
+            claimName: azure-storage
+      containers:
+        - name: database
+          image: sommerjobbbn2025acr.azurecr.io/sample/postgres:0.1.0
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: pg-password
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 1
+              memory: 500Mi
+          volumeMounts:
+            - name: postgresdb
+              mountPath: /var/lib/postgresql/data

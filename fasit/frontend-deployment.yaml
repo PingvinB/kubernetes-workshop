@@ -6,7 +6,6 @@ metadata:
     name: workshop
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -16,8 +15,8 @@ metadata:
     app: frontend
 spec:
   ports:
-  - port: 80
-    targetPort: 3000
+    - port: 80
+      targetPort: 3000
   selector:
     app: frontend
 ---
@@ -29,15 +28,15 @@ metadata:
 spec:
   ingressClassName: azure-application-gateway
   rules:
-  - http:
-      paths:
-      - path: /svelte
-        backend:
-          service:
-            name: frontend
-            port:
-              number: 80
-        pathType: Prefix
+    - http:
+        paths:
+          - path: /svelte
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+            pathType: Prefix
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -55,27 +54,27 @@ spec:
         app: frontend
     spec:
       containers:
-      - name: frontend
-        image: workshopacrsqr2klsnuxgxa.azurecr.io/sample/frontend:0.1.0
-        imagePullPolicy: Always
-        envFrom:
-        - configMapRef:
-            name: postgres-config
-        env:
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: pg-password
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: pg-username
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
-          limits:
-            cpu: 1
-            memory: 500Mi
+        - name: frontend
+          image: sommerjobbbn2025acr.azurecr.io/sample/frontend:0.1.0
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: pg-password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: pg-username
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 1
+              memory: 500Mi

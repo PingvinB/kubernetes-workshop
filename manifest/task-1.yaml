@@ -7,14 +7,13 @@ metadata:
     app: aspnetapp
 spec:
   containers:
-  - image: "workshopacrsqr2klsnuxgxa.azurecr.io/ඞඞඞ/aspnet:v1"
-    name: aspnetapp-image
-    ports:
-    - containerPort: 8080
-      protocol: TCP
+    - image: "sommerjobbbn2025acr.azurecr.io/ඞඞඞ/aspnet:v1"
+      name: aspnetapp-image
+      ports:
+        - containerPort: 8080
+          protocol: TCP
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -24,12 +23,11 @@ spec:
   selector:
     app: aspnetapp
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
 
 ---
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -40,13 +38,13 @@ metadata:
 spec:
   ingressClassName: azure-application-gateway
   rules:
-  - http:
-      paths:
-      # change this to your own path
-      - path: /ඞඞඞ # <subdirectory>
-        backend:
-          service:
-            name: aspnetapp
-            port:
-              number: 80
-        pathType: Prefix
+    - http:
+        paths:
+          # change this to your own path
+          - path: /ඞඞඞ # <subdirectory>
+            backend:
+              service:
+                name: aspnetapp
+                port:
+                  number: 80
+            pathType: Prefix

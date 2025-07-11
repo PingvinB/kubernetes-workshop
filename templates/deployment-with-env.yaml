@@ -16,10 +16,10 @@ spec:
         app: ඞඞඞ
     spec:
       containers:
-      - name: database
-        image: workshopacrsqr2klsnuxgxa.azurecr.io/ඞඞඞ/name:0.1.0
-        env:
-        - name: DEMO_GREETING
-          value: "Hello from the environment"
-        - name: DEMO_FAREWELL
-          value: "Such a sweet sorrow"
+        - name: database
+          image: sommerjobbbn2025acr.azurecr.io/ඞඞඞ/name:0.1.0
+          env:
+            - name: DEMO_GREETING
+              value: "Hello from the environment"
+            - name: DEMO_FAREWELL
+              value: "Such a sweet sorrow"

@@ -1,4 +1,5 @@
 # Kubernetes Workshop
+
 Kubernetes workshop for developers.
 
 ## Task 0
@@ -30,7 +31,7 @@ There are step-by-step installation instructions if you prefer not to run the sc
 We will be using a tenant with ID: `fdf88c80-36e9-45ee-a0b2-d7eb687e39eb`
 
 ```bash
-az login --tenant <Tenant_id>
+az login --tenant fdf88c80-36e9-45ee-a0b2-d7eb687e39eb
 ```
 
 ### Install kubectl
@@ -42,7 +43,7 @@ az aks install-cli
 ### Set kubectl context
 
 ```bash
-az aks get-credentials --name workshop-cluster --resource-group k8s-workshop
+az aks get-credentials --name Sommerjobb_2025_k8s --resource-group Sommerjobb_BN_2025_rg
 ```
 
 ### Install k9s (Kubernetes GUI)
@@ -72,7 +73,7 @@ In Kubernetes, namespaces provide a mechanism for isolating groups of resources 
 
 ## Task 1
 
-You will now build an image and deploy it to the Azure Container Registry (ACR). 
+You will now build an image and deploy it to the Azure Container Registry (ACR).
 All containers must have a unique name within the ACR.
 
 During this workshop you should choose a unique prefix so all your images gets a uniqe name, for instance your full name. Only use lowercase letters. Use this prefix instead of `<uri-prefix>` in the commands below.
@@ -82,19 +83,31 @@ During this workshop you should choose a unique prefix so all your images gets a
 - Open `aspnetapp\src\Program.cs` and update line 24 with a unique path
 - Navigate to `aspnetapp` and build the Dockerfile:
 
+#### Alternative 1: Build image in the cloud using ACR Tasks
+
 ```bash
-az acr build --image <uri-prefix>/aspnet:v1 --registry workshopacrsqr2klsnuxgxa --file Dockerfile .
+az acr build --image <uri-prefix>/aspnet:v1 --registry sommerjobbbn2025acr --file Dockerfile .
+```
+
+#### Alternative 2: Build locally using podman
+
+```bash
+az acr login --name sommerjobbbn2025acr
+
+podman build --tag sommerjobbbn2025acr.azurecr.io/<uri-prefix>/aspnet:v1 --file Dockerfile .
+
+podman push sommerjobbbn2025acr.azurecr.io/<uri-prefix>/aspnet:v1
 ```
 
 ### Update task-1.yaml
 
- - Update namespace to your own
- - In `Pod` definition at `spec.containers[0].image` update to the correct uri for your image
- - In `Ingress` definition at `spec.rules[0].http.paths[0].path` set the base path chosen in `Program.cs`
+- Update namespace to your own
+- In `Pod` definition at `spec.containers[0].image` update to the correct uri for your image
+- In `Ingress` definition at `spec.rules[0].http.paths[0].path` set the base path chosen in `Program.cs`
 
 ### Deploy in Kubernetes
 
- - Run:
+- Run:
 
 ```bash
 kubectl apply -f task-1.yaml
@@ -102,10 +115,9 @@ kubectl apply -f task-1.yaml
 
 ### Check that the service is available
 
- - Find the IP address using k9s: `:ingress`
- - Navigate to `ip-address/subdirectory` in the browser
-    - The subdirectory is the path from `Program.cs`
-
+- Find the IP address using k9s: `:ingress`
+- Navigate to `ip-address/subdirectory` in the browser
+  - The subdirectory is the path from `Program.cs`
 
 ## Task 2
 
@@ -113,19 +125,19 @@ You will now deploy a Svelte front end, which has nothing to do with the app you
 
 ### Build and push image to registry
 
- - Navigate to `frontend\svelte.config.js` and update line 16 to a path where you will host the frontend.
-    - This path cannot be the same path as the one you set in `aspnetapp`.
- - Build the frontend image
+- Navigate to `frontend\svelte.config.js` and update line 16 to a path where you will host the frontend.
+  - This path cannot be the same path as the one you set in `aspnetapp`.
+- Build the frontend image
 
 ```bash
-az acr build --image <uri-prefix>/<name>:<tag> --registry workshopacrsqr2klsnuxgxa --file Dockerfile .
+az acr build --image <uri-prefix>/<name>:<tag> --registry sommerjobbbn2025acr --file Dockerfile .
 ```
 
-### Update frontend.yaml with your own:
+### Update frontend.yaml with your own
 
- - namespace
- - subdirectory (base path)
- - image prefix and name
+- namespace
+- subdirectory (base path)
+- image prefix and name
 
 ### Deploy the frontend to Kubernetes
 
@@ -137,15 +149,15 @@ kubectl apply -f frontend.yaml
 
 ### Build and push image to registry
 
- - Navigate to `database` and build and push the Dockerfile
- - After updating all blanked out fields with appropriate values you can deploy `database.yaml`
- - Check the pod with k9s. You should find the pod in a crash loop back off
+- Navigate to `database` and build and push the Dockerfile
+- After updating all blanked out fields with appropriate values you can deploy `database.yaml`
+- Check the pod with k9s. You should find the pod in a crash loop back off
 
 ### Add environment variables
 
- - Check the `templates` folder to see an example of how one adds environment variables to a deployment
- - Add these variables: `POSTGRES_PASSWORD:ඞඞඞ` `POSTGRES_DB: todo` `PG_HOST: postgres`
- - Re-deploy and observe that the pod now starts
+- Check the `templates` folder to see an example of how one adds environment variables to a deployment
+- Add these variables: `POSTGRES_PASSWORD:ඞඞඞ` `POSTGRES_DB: todo` `PG_HOST: postgres`
+- Re-deploy and observe that the pod now starts
 
 ### Improve the deployment
 
@@ -159,22 +171,22 @@ We will fix the last problem first.
 
 ### Move config to a config map
 
- - Create a file where you can define your config map. Theres a template to get you started in the template folder
- - Remove the env section from the database deployment and add the same keys to the config map
- - Deploy the config map
- - Add an envFrom section to your database deployment, see templates for help
- - Redeploy the database
- - Add the same envFrom section to your frontend and it should now be able to connect to the database
+- Create a file where you can define your config map. Theres a template to get you started in the template folder
+- Remove the env section from the database deployment and add the same keys to the config map
+- Deploy the config map
+- Add an envFrom section to your database deployment, see templates for help
+- Redeploy the database
+- Add the same envFrom section to your frontend and it should now be able to connect to the database
 
- ### Use a Persistent Volume for the database data
+### Use a Persistent Volume for the database data
 
 To externalize the storage we need to ask kubernetes for a storage volume using a Persistent Volume Claim. Then we need to configure our database to mount the volume and store data there.
 
- - Add a `PersistentVolumeClaim` to `database.yaml` See the template file for help
- - Add the volumes section
- - Add the volumeMounts section
- - Update the config map with this entry: `PGDATA: /var/lib/postgresql/data/pgdata`
- - Redploy the resources you have changed
+- Add a `PersistentVolumeClaim` to `database.yaml` See the template file for help
+- Add the volumes section
+- Add the volumeMounts section
+- Update the config map with this entry: `PGDATA: /var/lib/postgresql/data/pgdata`
+- Redploy the resources you have changed
 
 Now you should be able to add todos from the frontend, delete the database with `Ctrl` + `k` in k9s, and see the same todos once the database restarts.
 
@@ -184,10 +196,10 @@ Now you should be able to add todos from the frontend, delete the database with 
 
 Default Kubernetes policy is to allow all traffic. This is not in line with the principle of least privilege. Therefore a good practice is to deploy a network policy which disallows all traffic, and explicitly allows only desired connections.
 
- - Create and deploy a deny all network policy. See the template file `deny-all-policy.yaml` for help
- - Check the frontend to see that it has lost connection to the database
- - Deploy a network policy which only allows the required communication. See the template file
- - Check the frontend again to see that communication is re-established
+- Create and deploy a deny all network policy. See the template file `deny-all-policy.yaml` for help
+- Check the frontend to see that it has lost connection to the database
+- Deploy a network policy which only allows the required communication. See the template file
+- Check the frontend again to see that communication is re-established
 
 ### Use secrets from Azure Key Vault
 
@@ -196,8 +208,8 @@ To use secrets from azure key vault the cluster uses RBAC to connected to a mana
 - Create your secrets through the azure portal
 - Deploy a service account based on the template
 - Open the k8s-identity in the Azure Portal
-    - Under Settings -> Federated credentials add a new credential for the service account you just deployed
-    - Copy the one you see there. The Issuer is the same for your new credential. The scope should point to your service account  
+  - Under Settings -> Federated credentials add a new credential for the service account you just deployed
+  - Copy the one you see there. The Issuer is the same for your new credential. The scope should point to your service account  
 - Deploy a secret store based on the template. This establishes a connection to the key vault
 - Deploy an external secret based on the template. This creates kubernetes secrets based on the key vault secret and keeps these in sync
 - Remove the secrets from the config map and re deploy it.

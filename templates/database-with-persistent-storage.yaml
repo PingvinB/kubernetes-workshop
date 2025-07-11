@@ -5,7 +5,7 @@ metadata:
   namespace: ඞඞඞ
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   storageClassName: managed-csi
   resources:
     requests:
@@ -27,13 +27,13 @@ spec:
         app: ඞඞඞ
     spec:
       volumes: # Add this section
-      - name: postgresdb
-        persistentVolumeClaim:
-          claimName: azure-storage
-      containers:
-      - name: database
-        image: workshopacrsqr2klsnuxgxa.azurecr.io/ඞඞඞ/name:0.1.0
-        imagePullPolicy: Always
-        volumeMounts: # Add this section
         - name: postgresdb
-          mountPath: /var/lib/postgresql/data
+          persistentVolumeClaim:
+            claimName: azure-storage
+      containers:
+        - name: database
+          image: sommerjobbbn2025acr.azurecr.io/ඞඞඞ/name:0.1.0
+          imagePullPolicy: Always
+          volumeMounts: # Add this section
+            - name: postgresdb
+              mountPath: /var/lib/postgresql/data
