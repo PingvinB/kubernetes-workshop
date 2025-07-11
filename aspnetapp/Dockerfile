@@ -4,11 +4,11 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 WORKDIR /source
 
 # copy csproj and restore as distinct layers
-COPY aspnetapp/*.csproj .
+COPY src/*.csproj .
 RUN dotnet restore
 
 # copy and publish app and libraries
-COPY aspnetapp/. .
+COPY src/. .
 RUN dotnet publish --no-restore -o /app
 
 
